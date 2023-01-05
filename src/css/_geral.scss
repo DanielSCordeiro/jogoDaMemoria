@@ -1,0 +1,23 @@
+// LOADING
+.load {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+
+  svg {
+    display: block;
+    width: 50px;
+    animation: girar 3s linear infinite;
+
+    path {
+      fill: $forte50;
+    }
+  }
+}
+
+@keyframes girar {
+  0% {transform: rotate(0)}
+  100% {transform: rotate(360deg)}
+}
