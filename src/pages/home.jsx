@@ -13,6 +13,7 @@ export function Home() {
   const { ListaImagens } = Contexto()
   const [ load, setLoad ] = useState(true)
   const [ lista, setLista ] = useState([])
+  const [ jogada, setJogada ] = useState([])
 
   function IniciarJogo() {
     // embaralhar cartas
@@ -25,11 +26,29 @@ export function Home() {
     }, 500)
   }
 
+  // MARCAR CARTA
+  function EscolherCarta(e) {
+    // console.log(jogada.length)
+
+    // marcar carta
+    let novaLista = lista.filter(item => {
+      if (item.id == e.id) {
+        item.status = true
+      }
+      return item
+    })
+    setLista(novaLista)
+    console.log(novaLista, 'novaLista')
+
+    // setJogada((prev) => ({...prev, item}))
+  }
+
 
   // INICIAR
   useEffect(() => {
+    console.log(jogada)
     IniciarJogo()
-  }, [])
+  }, [jogada])
 
   return (
     <main>
@@ -39,7 +58,21 @@ export function Home() {
           <Header />
           <div className="container">
             <div className="cartas">
-              {lista.map(item => <Carta key={item.id} img={item.img} />)}
+              {lista.map(item => 
+                <button 
+                  className={item.status ? 'carta cartaVirada' : 'carta'}
+                  key={item.id}
+                  disabled={item.status}
+                  onClick={() => EscolherCarta(item)}
+                >
+                  <div className='face'>
+                    <img src="/assets/capa.jpg" alt="Capa da carta no jogo da memória" />
+                  </div>
+                  <div className='face'>
+                    <img src={`/assets/${item.img}.jpg`} alt={`Carta contendo a foto de um ${item.img} no jogo da memória`} />
+                  </div>
+                </button>
+              )}
             </div>
           </div>
           <Footer />

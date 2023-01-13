@@ -4,18 +4,18 @@ const Context = createContext()
 
 export const ContextProvider = ({children}) => {
   const ListaImagens = [
-    {id: 1, img: 'elefante'},
-    {id: 2, img: 'girafa'},
-    {id: 3, img: 'hipopotamo'},
-    {id: 4, img: 'leao'},
-    {id: 5, img: 'tigre'},
-    {id: 6, img: 'zebra'},
-    {id: 7, img: 'elefante'},
-    {id: 8, img: 'girafa'},
-    {id: 9, img: 'hipopotamo'},
-    {id: 10, img: 'leao'},
-    {id: 11, img: 'tigre'},
-    {id: 12, img: 'zebra'}
+    {id: 1, status: false, img: 'elefante'},
+    {id: 2, status: false, img: 'girafa'},
+    {id: 3, status: false, img: 'hipopotamo'},
+    {id: 4, status: false, img: 'leao'},
+    {id: 5, status: false, img: 'tigre'},
+    {id: 6, status: false, img: 'zebra'},
+    {id: 7, status: false, img: 'elefante'},
+    {id: 8, status: false, img: 'girafa'},
+    {id: 9, status: false, img: 'hipopotamo'},
+    {id: 10, status: false, img: 'leao'},
+    {id: 11, status: false, img: 'tigre'},
+    {id: 12, status: false, img: 'zebra'}
   ]
 
   return (

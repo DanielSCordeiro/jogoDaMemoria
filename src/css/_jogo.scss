@@ -47,9 +47,13 @@ $dim: 100px;
         }
       }
 
-      &:hover {
-        transform: rotateY(180deg);
-      }
+      // &:hover {
+      //   transform: rotateY(180deg);
+      // }
+    }
+
+    .cartaVirada {
+      transform: rotateY(180deg) !important;
     }
 
   }
