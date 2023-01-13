@@ -1,0 +1,56 @@
+$dim: 100px;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  flex: 1;
+
+  .cartas {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    width: 100%;
+
+    perspective: 1000px;
+    
+    .carta {
+      display: flex;
+      align-items: center;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3/4;
+      cursor: pointer;
+
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+
+
+      .face {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+
+        backface-visibility: hidden;
+
+        img {
+          width: 100%;
+        }
+
+        &:last-child {
+          transform: rotateY(0.5turn);
+        }
+      }
+
+      &:hover {
+        transform: rotateY(180deg);
+      }
+    }
+
+  }
+}
