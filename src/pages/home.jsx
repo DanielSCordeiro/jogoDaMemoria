@@ -15,7 +15,8 @@ export function Home() {
   const [ jogada, setJogada ] = useState([])
   const [ cartasViradas, setCartasViradas ] = useState(0)
   const [ bloquear, setBloquear ] = useState(false)
-  const [ parFormado, setParFormado ] = useState(false)
+  const [ parFormado, setParFormado ] = useState([])
+  const [ naoFormado, setNaoFormado ] = useState([])
   const [ informacao, setInformacao ] = useState('')
 
 
@@ -59,10 +60,12 @@ export function Home() {
     setTimeout(() => {
       setInformacao('Parabéns! Você conseguiu formar o par.')
     }, 600)
+    // efeito de parFormado com CSS
+    setTimeout(() => {
+      setParFormado([jogada[0].id, jogada[1].id])
+    }, 600)
     // reiniciar a jogada
     setJogada([])
-
-
     // atrazar o inicio da próxima jogada
     setTimeout(() => {
       Desbloquear()
@@ -74,6 +77,10 @@ export function Home() {
     // informar status da jogada
     setTimeout(() => {
       setInformacao('Ops! As cartas não combinam.')
+    }, 600)
+    // efeito de parNaoFormado com CSS
+    setTimeout(() => {
+      setNaoFormado([jogada[0].id, jogada[1].id])
     }, 600)
     // atrazar a retirada das cartas para mostrar que o usuário errou
     setTimeout(() => {
@@ -95,46 +102,52 @@ export function Home() {
 
   // DESBLOQUEAR BOTOES PARA CONTINUAR O JOGO ESCOLHENDO OUTRA CARTA
   function Desbloquear() {
-    setTimeout(() => {
-      // informar status da jogada
-      setInformacao('Escolha outra carta para continuar.')
-      // desbloquear temporariamente uma nova jogada
-      setBloquear(false)
-    }, 500)
-  }
+    // limpar parFormado
+    setParFormado([])
+    // limpar parNaoFormado
+    setNaoFormado([])
 
-  // FIM DE JOGO - TODOS OS PARES FORMADOS
-  function FinalizarJogo() {
-    console.log('FinalizarJogo()')
-  }
-
-  // CHECAR PAR
-  useEffect(() => {
-    // verificar final do jogo
+    // VERIFICAR SE O JOGO CHEGOU AO FIM
     let verificar = lista.filter(item => {
       if (item.status) {
         return item
       }
     })
-    if (verificar.length === lista.length && jogada.length === 2) {
-      // finalizar o jogo
-      FinalizarJogo()
+    if (verificar.length === lista.length) {
+      // o jogo chegou ao fim
+      setTimeout(() => {
+        // informar status da jogada
+        setInformacao('Parabéns! Você completou o desafio.')
+      }, 500)
     } else {
-      // verificar o par
-      if (jogada.length === 2) {
-        if (jogada[0].img === jogada[1].img) {
-          // acertou o par
-          ConfirmarJogada()
-        } else {
-          // errou o par
-          ApagarJogada()
-        }
+      // continuar o jogo
+      setTimeout(() => {
+        // informar status da jogada
+        setInformacao('Escolha outra carta para continuar.')
+        // desbloquear temporariamente uma nova jogada
+        setBloquear(false)
+      }, 500)
+    }
+
+
+
+  }
+
+  // CHECAR PAR
+  useEffect(() => {
+    if (jogada.length === 2) {
+      if (jogada[0].img === jogada[1].img) {
+        // acertou o par
+        ConfirmarJogada()
+      } else {
+        // errou o par
+        ApagarJogada()
       }
-      else if (jogada.length === 1) {
-        setTimeout(() => {
-          setInformacao(`Onde está a outra carta com ${jogada[0].img}`)
-        }, 600)
-      }
+    }
+    else if (jogada.length === 1) {
+      setTimeout(() => {
+        setInformacao(`Onde está a outra carta com ${jogada[0].img}`)
+      }, 600)
     }
   }, [jogada])
 
@@ -152,20 +165,35 @@ export function Home() {
           <Header informacao={informacao} />
           <div className="container">
             <div className="cartas">
-              {lista.map(item => 
-                <button 
-                  className={item.status ? 'carta cartaVirada' : 'carta'}
-                  key={item.id}
-                  disabled={item.status || bloquear}
-                  onClick={() => EscolherCarta(item)}
-                >
-                  <div className='face'>
-                    <img src="/assets/capa.jpg" alt="Capa da carta no jogo da memória" />
-                  </div>
-                  <div className='face'>
-                    <img src={`/assets/${item.img}.jpg`} alt={`Carta contendo a foto de um ${item.img} no jogo da memória`} />
-                  </div>
-                </button>
+              {lista.map(item => {
+
+                  let estilo = 'carta'
+                  if (item.status) {
+                    estilo += ' cartaVirada'
+                  }
+                  if (parFormado.includes(item.id)) {
+                    estilo += ' parFormado'
+                  }
+                  if (naoFormado.includes(item.id)) {
+                    estilo += ' parNaoFormado'
+                  }
+
+                  return (
+                    <button 
+                      className={estilo}
+                      key={item.id}
+                      disabled={item.status || bloquear}
+                      onClick={() => EscolherCarta(item)}
+                    >
+                      <div className='face'>
+                        <img src="/assets/capa.jpg" alt="Capa da carta no jogo da memória" />
+                      </div>
+                      <div className='face'>
+                        <img src={`/assets/${item.img}.jpg`} alt={`Carta contendo a foto de um ${item.img} no jogo da memória`} />
+                      </div>
+                    </button>
+                  )
+                }
               )}
             </div>
           </div>
