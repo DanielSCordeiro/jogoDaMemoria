@@ -5,7 +5,7 @@ $medio90: #808080;
 $forte50: #212121;
 $forte90: #000000;
 $destaque: #740404;
-$especial: #e06a02;
+$especial: #e0c202;
 
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,300;0,600;0,700;1,300;1,600;1,700&display=swap');
 
@@ -71,11 +71,13 @@ main {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 700px;
+  max-width: 600px;
   flex: 1;
   margin: 0 auto;
   padding: 0 1rem;
 }
 
 @import 'geral';
+@import 'header';
 @import 'jogo';
+@import 'footer';

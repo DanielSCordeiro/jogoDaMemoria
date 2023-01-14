@@ -15,9 +15,12 @@ export function Home() {
   const [ jogada, setJogada ] = useState([])
   const [ cartasViradas, setCartasViradas ] = useState(0)
   const [ parFormado, setParFormado ] = useState(false)
+  const [ informacao, setInformacao ] = useState('')
 
 
   function IniciarJogo() {
+    // informar status da jogada
+    setInformacao('Escolha uma carta para iniciar a partida.')
     // embaralhar cartas
     let embaralhar = ListaImagens.sort()
     setLista(embaralhar)
@@ -47,12 +50,27 @@ export function Home() {
 
   // CONFIRMAR JOGADA
   function ConfirmarJogada() {
+    // informar status da jogada
+    setTimeout(() => {
+      setInformacao('Parabéns! Você conseguiu formar o par.')
+    }, 600)
     // reiniciar a jogada
     setJogada([])
+
+
+    // atrazar o inicio da próxima jogada
+    setTimeout(() => {
+      // informar status da jogada
+      setInformacao('Escolha outra carta para continuar.')
+    }, 2500)
   }
 
   // CONFIRMAR JOGADA
   function ApagarJogada() {
+    // informar status da jogada
+    setTimeout(() => {
+      setInformacao('Ops! As cartas não combinam.')
+    }, 600)
     // atrazar a retirada das cartas para mostrar que o usuário errou
     setTimeout(() => {
       // desmarcar cartas
@@ -66,6 +84,8 @@ export function Home() {
       setLista(novaLista)
       // reiniciar a jogada
       setJogada([])
+      // informar status da jogada
+      setInformacao('Escolha outra carta para continuar.')
     }, 2000)
   }
 
@@ -96,6 +116,11 @@ export function Home() {
           ApagarJogada()
         }
       }
+      else if (jogada.length === 1) {
+        setTimeout(() => {
+          setInformacao(`Onde está a outra carta com ${jogada[0].img}`)
+        }, 600)
+      }
     }
   }, [jogada])
 
@@ -110,7 +135,7 @@ export function Home() {
       {load && <Loading />}
       {!load && 
         <div className="conteudo">
-          <Header cartasViradas={cartasViradas} />
+          <Header informacao={informacao} />
           <div className="container">
             <div className="cartas">
               {lista.map(item => 
@@ -130,7 +155,7 @@ export function Home() {
               )}
             </div>
           </div>
-          <Footer />
+          <Footer cartasViradas={cartasViradas} />
         </div>
       }
     </main>
