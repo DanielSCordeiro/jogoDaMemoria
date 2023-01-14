@@ -14,6 +14,7 @@ export function Home() {
   const [ lista, setLista ] = useState([])
   const [ jogada, setJogada ] = useState([])
   const [ cartasViradas, setCartasViradas ] = useState(0)
+  const [ bloquear, setBloquear ] = useState(false)
   const [ parFormado, setParFormado ] = useState(false)
   const [ informacao, setInformacao ] = useState('')
 
@@ -46,6 +47,10 @@ export function Home() {
     setJogada(prev => ([...prev, itemClicado]))
     // marcar jogada
     setCartasViradas(prev => prev + 1)
+    if (jogada.length == 1) {
+      // bloquear temporariamente uma nova jogada
+      setBloquear(true)
+    }
   }
 
   // CONFIRMAR JOGADA
@@ -60,9 +65,8 @@ export function Home() {
 
     // atrazar o inicio da próxima jogada
     setTimeout(() => {
-      // informar status da jogada
-      setInformacao('Escolha outra carta para continuar.')
-    }, 2500)
+      Desbloquear()
+    }, 2000)
   }
 
   // CONFIRMAR JOGADA
@@ -84,9 +88,19 @@ export function Home() {
       setLista(novaLista)
       // reiniciar a jogada
       setJogada([])
+      // continuar o jogo
+      Desbloquear()
+    }, 2000)
+  }
+
+  // DESBLOQUEAR BOTOES PARA CONTINUAR O JOGO ESCOLHENDO OUTRA CARTA
+  function Desbloquear() {
+    setTimeout(() => {
       // informar status da jogada
       setInformacao('Escolha outra carta para continuar.')
-    }, 2000)
+      // desbloquear temporariamente uma nova jogada
+      setBloquear(false)
+    }, 500)
   }
 
   // FIM DE JOGO - TODOS OS PARES FORMADOS
@@ -142,7 +156,7 @@ export function Home() {
                 <button 
                   className={item.status ? 'carta cartaVirada' : 'carta'}
                   key={item.id}
-                  disabled={item.status}
+                  disabled={item.status || bloquear}
                   onClick={() => EscolherCarta(item)}
                 >
                   <div className='face'>
