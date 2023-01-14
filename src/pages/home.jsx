@@ -130,8 +130,8 @@ export function Home() {
     // limpar parNaoFormado
     setNaoFormado([])
     // VERIFICAR SE O JOGO CHEGOU AO FIM
-    if (paresFormados === lista.length) {
-      // o jogo chegou ao fim
+    if (paresFormados === 5) {
+      // o jogo chegou ao fim - 5 pois o array inicia em 0, então terá 6 elementos
       setTimeout(() => {
         setInformacao('Parabéns! Você completou o desafio.')
       }, 500)
@@ -197,7 +197,7 @@ export function Home() {
                       onClick={() => EscolherCarta(item)}
                     >
                       <div className='face'>
-                        <img src="/assets/capa.jpg" alt="Capa da carta no jogo da memória" />
+                        <img src='/assets/capa.jpg' alt="Capa da carta no jogo da memória" />
                       </div>
                       <div className='face'>
                         <img src={`/assets/${item.img}.jpg`} alt={`Carta contendo a foto de um ${item.img} no jogo da memória`} />
@@ -210,7 +210,7 @@ export function Home() {
           </div>
           <Footer 
             cartasViradas={cartasViradas} 
-            final={paresFormados === lista.length / 2 ? true : false} 
+            final={informacao === 'Parabéns! Você completou o desafio.' ? true : false} 
             IniciarJogo={IniciarJogo}
           />
         </div>
