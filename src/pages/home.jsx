@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 import { Contexto } from '../contexts'
 
 import { Loading } from '../components/loading'
@@ -7,13 +6,12 @@ import { Header } from '../components/header'
 import { Footer } from '../components/footer'
 
 export function Home() {
-  const params = useParams()
-  const navigate = useNavigate()
   const { ListaImagens } = Contexto()
   const [ load, setLoad ] = useState(true)
   const [ lista, setLista ] = useState([])
   const [ jogada, setJogada ] = useState([])
   const [ cartasViradas, setCartasViradas ] = useState(0)
+  const [ paresFormados, setParesFormados ] = useState(0)
   const [ bloquear, setBloquear ] = useState(false)
   const [ parFormado, setParFormado ] = useState([])
   const [ naoFormado, setNaoFormado ] = useState([])
@@ -21,16 +19,39 @@ export function Home() {
 
 
   function IniciarJogo() {
-    // informar status da jogada
+    // zerar dados
+    setLoad(true)
+    setJogada([])
+    setCartasViradas(0)
+    setParesFormados(0)
+    setBloquear(false)
+    setParFormado([])
+    setNaoFormado([])
     setInformacao('Escolha uma carta para iniciar a partida.')
+    // desmarcar cartas (pode ser um bug, mas sem este filtro os pares montados anteriormente continuavam montados)
+    let novaLista = ListaImagens.filter(item => {
+      if (item.status) {
+        item.status = false
+      }
+      return item
+    })
     // embaralhar cartas
-    let embaralhar = ListaImagens.sort()
-    setLista(embaralhar)
-
+    let embaralhado = embaralhar(novaLista)
+    // salvar cartas embaralhadas
+    setLista(embaralhado)
     // atraso no carregamento para dar impressão de que as cartas estão sendo carregadas
     setTimeout(() => {
       setLoad(false)
     }, 500)
+  }
+
+  // EMBARALHAR LISTA
+  function embaralhar(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      let aleatorio = Math.floor(Math.random() * (i + 1));
+      [array[i], array[aleatorio]] = [array[aleatorio], array[i]]
+    }
+    return array
   }
 
   // MARCAR CARTA
@@ -56,6 +77,8 @@ export function Home() {
 
   // CONFIRMAR JOGADA
   function ConfirmarJogada() {
+    // marcar quantidade de pares formados
+    setParesFormados(prev => prev + 1)
     // informar status da jogada
     setTimeout(() => {
       setInformacao('Parabéns! Você conseguiu formar o par.')
@@ -72,7 +95,7 @@ export function Home() {
     }, 2000)
   }
 
-  // CONFIRMAR JOGADA
+  // APAGAR JOGADA
   function ApagarJogada() {
     // informar status da jogada
     setTimeout(() => {
@@ -106,31 +129,20 @@ export function Home() {
     setParFormado([])
     // limpar parNaoFormado
     setNaoFormado([])
-
     // VERIFICAR SE O JOGO CHEGOU AO FIM
-    let verificar = lista.filter(item => {
-      if (item.status) {
-        return item
-      }
-    })
-    if (verificar.length === lista.length) {
+    if (paresFormados === lista.length) {
       // o jogo chegou ao fim
       setTimeout(() => {
-        // informar status da jogada
         setInformacao('Parabéns! Você completou o desafio.')
       }, 500)
     } else {
       // continuar o jogo
       setTimeout(() => {
-        // informar status da jogada
         setInformacao('Escolha outra carta para continuar.')
         // desbloquear temporariamente uma nova jogada
         setBloquear(false)
       }, 500)
     }
-
-
-
   }
 
   // CHECAR PAR
@@ -150,7 +162,6 @@ export function Home() {
       }, 600)
     }
   }, [jogada])
-
 
   // INICIAR
   useEffect(() => {
@@ -197,7 +208,11 @@ export function Home() {
               )}
             </div>
           </div>
-          <Footer cartasViradas={cartasViradas} />
+          <Footer 
+            cartasViradas={cartasViradas} 
+            final={paresFormados === lista.length / 2 ? true : false} 
+            IniciarJogo={IniciarJogo}
+          />
         </div>
       }
     </main>
