@@ -175,7 +175,9 @@ export function Home() {
         <div className="conteudo">
           <Header informacao={informacao} />
           <div className="container">
-            <div className="cartas">
+            <div className={
+              informacao === 'Parabéns! Você completou o desafio.' ? 'cartas finalJogo' : 'cartas'
+            }>
               {lista.map(item => {
 
                   let estilo = 'carta'

@@ -8,6 +8,10 @@ $dim: 100px;
   width: 100%;
   flex: 1;
 
+  .finalJogo {
+    animation: finalizado 2s ease infinite;
+  }
+
   .cartas {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -118,5 +122,17 @@ $dim: 100px;
   }
   100% {
     transform: rotateY(180deg) rotate(0);
+  }
+}
+
+@keyframes finalizado {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
   }
 }
