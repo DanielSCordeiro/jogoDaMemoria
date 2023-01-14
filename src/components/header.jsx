@@ -1,7 +1,7 @@
-export function Header() {
+export function Header({cartasViradas}) {
   return (
     <header>
-      header
+      {cartasViradas}
     </header>
   )
 }
