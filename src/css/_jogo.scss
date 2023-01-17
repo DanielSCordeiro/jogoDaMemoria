@@ -15,7 +15,7 @@ $dim: 100px;
   .cartas {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
+    gap: 0.5rem;
     width: 100%;
 
     perspective: 1000px;
@@ -26,10 +26,10 @@ $dim: 100px;
       position: relative;
       width: 100%;
       aspect-ratio: 3/4;
+      background-color: transparent;
 
       transition: transform 0.8s;
       transform-style: preserve-3d;
-
 
       .face {
         display: flex;
@@ -38,11 +38,22 @@ $dim: 100px;
         width: 100%;
         height: 100%;
         position: absolute;
+        border-radius: 10px;
+        overflow: hidden;
 
         backface-visibility: hidden;
 
         img {
-          width: 100%;
+          width: 102%;
+        }
+
+        &:first-child {
+          border: 2px solid $forte50;
+
+          &:not([disabled]):hover,
+          &:not([disabled]):active {
+            border-color: $fraco20;
+          }
         }
 
         &:last-child {

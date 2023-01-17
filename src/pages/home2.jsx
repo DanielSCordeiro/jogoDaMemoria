@@ -8,37 +8,28 @@ import { Footer } from '../components/footer'
 export function Home() {
   const { ListaImagens } = Contexto()
   const [ load, setLoad ] = useState(true)
-  const [ informacao, setInformacao ] = useState('')
-  const [ cartasViradas, setCartasViradas ] = useState(0)
-  const [ paresFormados, setParesFormados ] = useState(0)
   const [ lista, setLista ] = useState([])
   const [ jogada, setJogada ] = useState([])
-  const [ bloquearBotao, setBloquearBotao ] = useState(false)
-  const [ finalDoJogo, setFinalDoJogo ] = useState(false)
+  const [ cartasViradas, setCartasViradas ] = useState(0)
+  const [ paresFormados, setParesFormados ] = useState(0)
+  const [ bloquear, setBloquear ] = useState(false)
   const [ parFormado, setParFormado ] = useState([])
   const [ naoFormado, setNaoFormado ] = useState([])
+  const [ informacao, setInformacao ] = useState('')
+  const [ finalDoJogo, setFinalDoJogo ] = useState(false)
 
-  // EMBARALHAR ARRAY
-  function embaralhar(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      let aleatorio = Math.floor(Math.random() * (i + 1));
-      [array[i], array[aleatorio]] = [array[aleatorio], array[i]]
-    }
-    return array
-  }
 
-  // INICIAR JOGO
   function IniciarJogo() {
     // zerar dados
     setLoad(true)
     setJogada([])
     setCartasViradas(0)
     setParesFormados(0)
-    setBloquearBotao(false)
+    setBloquear(false)
     setParFormado([])
     setNaoFormado([])
     setInformacao('Escolha uma carta para iniciar a partida.')
-    // desmarcar cartas
+    // desmarcar cartas (pode ser um bug, mas sem este filtro os pares montados anteriormente continuavam montados)
     let novaLista = ListaImagens.filter(item => {
       if (item.status) {
         item.status = false
@@ -52,22 +43,23 @@ export function Home() {
     // atraso no carregamento para dar impressão de que as cartas estão sendo carregadas
     setTimeout(() => {
       setLoad(false)
-    }, 2000)
+    }, 500)
   }
 
-  // ALTERAR INFORMAÇÕES NA TELA
-  function SetInfo(info) {
-    // atrazar alteração para dar tempo de efeito visual (css)
-    setTimeout(() => {
-      setInformacao(info)
-    }, 600)
+  // EMBARALHAR LISTA
+  function embaralhar(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      let aleatorio = Math.floor(Math.random() * (i + 1));
+      [array[i], array[aleatorio]] = [array[aleatorio], array[i]]
+    }
+    return array
   }
 
-  // MARCAR CARTA ESCOLHIDA
+  // MARCAR CARTA
   function EscolherCarta(itemClicado) {
     // marcar carta
     let novaLista = lista.filter(item => {
-      if (item.id === itemClicado.id) {
+      if (item.id == itemClicado.id) {
         item.status = true
       }
       return item
@@ -78,32 +70,20 @@ export function Home() {
     setJogada(prev => ([...prev, itemClicado]))
     // marcar jogada
     setCartasViradas(prev => prev + 1)
-    // bloquear temporariamente uma nova jogada
-    if (jogada.length === 1) {
-      setBloquearBotao(true)
+    if (jogada.length == 1) {
+      // bloquear temporariamente uma nova jogada
+      setBloquear(true)
     }
   }
-
-  // MONITORAR CADA JOGADA
-  useEffect(() => {
-    if (jogada.length === 2) {
-      if (jogada[0].img === jogada[1].img) {
-        ConfirmarJogada()
-      } else {
-        ApagarJogada()
-      }
-    }
-    else if (jogada.length === 1) {
-      SetInfo(`Onde está a outra carta com ${jogada[0].info}.`)
-    }
-  }, [jogada])
 
   // CONFIRMAR JOGADA
   function ConfirmarJogada() {
     // marcar quantidade de pares formados
     setParesFormados(prev => prev + 1)
     // informar status da jogada
-    SetInfo('Parabéns! Você conseguiu formar o par.')
+    setTimeout(() => {
+      setInformacao('Parabéns! Você conseguiu formar o par.')
+    }, 600)
     // efeito de parFormado com CSS
     setTimeout(() => {
       setParFormado([jogada[0].id, jogada[1].id])
@@ -119,14 +99,16 @@ export function Home() {
   // APAGAR JOGADA
   function ApagarJogada() {
     // informar status da jogada
-    SetInfo('Ops! As cartas não combinam.')
-    // atrazar para efeito de parNaoFormado com CSS
+    setTimeout(() => {
+      setInformacao('Ops! As cartas não combinam.')
+    }, 600)
+    // efeito de parNaoFormado com CSS
     setTimeout(() => {
       setNaoFormado([jogada[0].id, jogada[1].id])
     }, 600)
-    // desmarcar cartas
     // atrazar a retirada das cartas para mostrar que o usuário errou
     setTimeout(() => {
+      // desmarcar cartas
       let novaLista = lista.filter(item => {
         if (item.id == jogada[0].id || item.id == jogada[1].id) {
           item.status = false
@@ -144,24 +126,43 @@ export function Home() {
 
   // DESBLOQUEAR BOTOES PARA CONTINUAR O JOGO ESCOLHENDO OUTRA CARTA
   function Desbloquear() {
+    // limpar parFormado
+    setParFormado([])
+    // limpar parNaoFormado
+    setNaoFormado([])
     // VERIFICAR SE O JOGO CHEGOU AO FIM
     if (paresFormados === 5) {
-      SetInfo('Parabéns! Você completou o desafio.')
+      // o jogo chegou ao fim - 5 pois o array inicia em 0, então terá 6 elementos
       setTimeout(() => {
-        setFinalDoJogo(true)
-      }, 600)
+        setInformacao('Parabéns! Você completou o desafio.')
+      }, 500)
     } else {
-      // limpar parFormado
-      setParFormado([])
-      // limpar parNaoFormado
-      setNaoFormado([])
-      SetInfo('Escolha outra carta para continuar.')
-      // desbloquear temporariamente uma nova jogada
+      // continuar o jogo
       setTimeout(() => {
-        setBloquearBotao(false)
-      }, 600)
+        setInformacao('Escolha outra carta para continuar.')
+        // desbloquear temporariamente uma nova jogada
+        setBloquear(false)
+      }, 500)
     }
   }
+
+  // CHECAR PAR
+  useEffect(() => {
+    if (jogada.length === 2) {
+      if (jogada[0].img === jogada[1].img) {
+        // acertou o par
+        ConfirmarJogada()
+      } else {
+        // errou o par
+        ApagarJogada()
+      }
+    }
+    else if (jogada.length === 1) {
+      setTimeout(() => {
+        setInformacao(`Onde está a outra carta com ${jogada[0].info}.`)
+      }, 600)
+    }
+  }, [jogada])
 
   // INICIAR
   useEffect(() => {
@@ -193,7 +194,7 @@ export function Home() {
                     <button 
                       className={estilo}
                       key={item.id}
-                      disabled={item.status || bloquearBotao}
+                      disabled={item.status || bloquear}
                       onClick={() => EscolherCarta(item)}
                     >
                       <div className='face'>
@@ -212,8 +213,8 @@ export function Home() {
             </div>
           </div>
           <Footer 
-            cartasViradas={cartasViradas}
-            final={finalDoJogo}
+            cartasViradas={cartasViradas} 
+            final={finalDoJogo} 
             IniciarJogo={IniciarJogo}
           />
         </div>
