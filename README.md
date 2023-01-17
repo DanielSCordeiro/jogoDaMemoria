@@ -1,6 +1,12 @@
 <h1>Jogo da Memória</h1>
 ReactJS
 
+Na construção do projeto foi utilizado:
+* vite
+* sass
+* useContext
+* pwa
+
 ## Descrição
 O Jogo foi desenvolvido com o intuito de aprimorar algumas técnicas de Javascript e CSS e não tem como finalizar a jogabilidade em si, como por exemplo calculando pontuação e/ou nível de intelectualidade. Nesta primeira versão também não foi levando em conta a reponsabilidade para telas menores.
 
