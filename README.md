@@ -17,3 +17,6 @@ Após baixar o projeto em sua máquina, instale as dependências com NPM ou YARN
 
 Depois rode o projeto com npm start ou yarn start
 * yarn start
+
+## Projeto online
+https://jogodamemoria.danielcordeiro.com.br
